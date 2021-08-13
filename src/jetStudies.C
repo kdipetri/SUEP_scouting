@@ -314,6 +314,7 @@ void fatjet_plots(std::string sample, std::string sel, std::vector<Track> tracks
             for (int i=0; i<rhos.size() ; i++){
 			    plotter.Plot1D(Form( "%s_%s_jetsAK%i_suep_rho_dR0p05_%i" , sample.c_str(),sel.c_str(),cone,i),Form(";jet rho%i",i) , rhos[i], 100, 0, 20.0 );		
 
+                // 2D plots 
 			    plotter.Plot2D(Form( "%s_%s_jetsAK%i_suep_evtntrk_v_rho_dR0p05_%i" , sample.c_str(),sel.c_str(),cone,i),Form(";jet rho%i;ntrk"  ,i) , rhos[i], tracks.size()      , 100, 0, 20.0, 100, 0, 100.0 );		
 			    plotter.Plot2D(Form( "%s_%s_jetsAK%i_suep_jetntrk_v_rho_dR0p05_%i" , sample.c_str(),sel.c_str(),cone,i),Form(";jet rho%i;nconst",i) , rhos[i], constituents.size(), 100, 0, 20.0, 100, 0, 100.0 );		
 				
@@ -334,6 +335,7 @@ void fatjet_plots(std::string sample, std::string sel, std::vector<Track> tracks
 			    // split into dijet/middle/single jet
 			    plotter.Plot1D(Form( "%s_%s_jetsAK%i_suep_rho_dR0p05_%i_rho0%s" , sample.c_str(),sel.c_str(),cone,i, rho0sel.c_str()),Form(";jet rho%i",i) , rhos[i], 100, 0, 20.0 );		
 			    
+			    plotter.Plot2D(Form( "%s_%s_jetsAK%i_suep_evtntrk_v_rho_dR0p05_%i_rho0%sL" , sample.c_str(),sel.c_str(),cone,i, rho0sel.c_str()),Form(";jet rho%i;ntrk"  ,i) , rhos[i], tracks.size()      , 200, 0, 20.0, 250, 0, 250.0 );		
 			    plotter.Plot2D(Form( "%s_%s_jetsAK%i_suep_evtntrk_v_rho_dR0p05_%i_rho0%s" , sample.c_str(),sel.c_str(),cone,i, rho0sel.c_str()),Form(";jet rho%i;ntrk"  ,i) , rhos[i], tracks.size()      , 200, 0, 20.0, 100, 0, 100.0 );		
 			    plotter.Plot2D(Form( "%s_%s_jetsAK%i_suep_jetntrk_v_rho_dR0p05_%i_rho0%s" , sample.c_str(),sel.c_str(),cone,i, rho0sel.c_str()),Form(";jet rho%i;nconst",i) , rhos[i], constituents.size(), 200, 0, 20.0, 100, 0, 100.0 );		
 
@@ -353,21 +355,40 @@ void fatjet_plots(std::string sample, std::string sel, std::vector<Track> tracks
             // Nsubjettiness
             //
             float tau21 = nsubjettinessratio(suep_jet,2,1, R);
-           	plotter.Plot1D(Form( "%s_%s_jetsAK%i_suep_nsub1"   , sample.c_str(),sel.c_str(),cone),";jet tau_{1}"  , nsubjettiness(suep_jet,1, R)       , 100, 0, 1.0 );		
-           	plotter.Plot1D(Form( "%s_%s_jetsAK%i_suep_nsub2"   , sample.c_str(),sel.c_str(),cone),";jet tau_{2}"  , nsubjettiness(suep_jet,2, R)       , 100, 0, 1.0 );		
-           	plotter.Plot1D(Form( "%s_%s_jetsAK%i_suep_nsub3"   , sample.c_str(),sel.c_str(),cone),";jet tau_{3}"  , nsubjettiness(suep_jet,3, R)       , 100, 0, 1.0 );		
-           	plotter.Plot1D(Form( "%s_%s_jetsAK%i_suep_nsub32"  , sample.c_str(),sel.c_str(),cone),";jet tau_{32}" , nsubjettinessratio(suep_jet,3,2, R), 100, 0, 1.5 );		
-           	plotter.Plot1D(Form( "%s_%s_jetsAK%i_suep_nsub21"  , sample.c_str(),sel.c_str(),cone),";jet tau_{21}" , tau21					  , 100, 0, 1.5 );		
+            float tau32 = nsubjettinessratio(suep_jet,3,2, R);
+            float tau31 = nsubjettinessratio(suep_jet,3,1, R);
+
+           	plotter.Plot1D(Form( "%s_%s_jetsAK%i_suep_nsub1"   , sample.c_str(),sel.c_str(),cone),";jet tau_{1}"  , nsubjettiness(suep_jet,1, R)   , 100, 0, 1.0 );		
+           	plotter.Plot1D(Form( "%s_%s_jetsAK%i_suep_nsub2"   , sample.c_str(),sel.c_str(),cone),";jet tau_{2}"  , nsubjettiness(suep_jet,2, R)   , 100, 0, 1.0 );		
+           	plotter.Plot1D(Form( "%s_%s_jetsAK%i_suep_nsub3"   , sample.c_str(),sel.c_str(),cone),";jet tau_{3}"  , nsubjettiness(suep_jet,3, R)   , 100, 0, 1.0 );		
+           	plotter.Plot1D(Form( "%s_%s_jetsAK%i_suep_nsub32"  , sample.c_str(),sel.c_str(),cone),";jet tau_{32}" , tau32, 100, 0, 1.5 );		
+           	plotter.Plot1D(Form( "%s_%s_jetsAK%i_suep_nsub31"  , sample.c_str(),sel.c_str(),cone),";jet tau_{32}" , tau31, 100, 0, 1.5 );		
+           	plotter.Plot1D(Form( "%s_%s_jetsAK%i_suep_nsub21"  , sample.c_str(),sel.c_str(),cone),";jet tau_{21}" , tau21, 100, 0, 1.5 );		
+           	
            	// compare tau21 and ntracks
 			plotter.Plot2D(Form( "%s_%s_jetsAK%i_suep_evtntrk_v_nsub21L", sample.c_str(),sel.c_str(),cone),";jet tau_{21};ntrk"   , tau21, tracks.size()      , 100, 0, 1.0, 250, 0, 250.0 );		
 			plotter.Plot2D(Form( "%s_%s_jetsAK%i_suep_evtntrk_v_nsub21" , sample.c_str(),sel.c_str(),cone),";jet tau_{21};ntrk"   , tau21, tracks.size()      , 100, 0, 1.0, 100, 0, 100.0 );		
 			plotter.Plot2D(Form( "%s_%s_jetsAK%i_suep_jetntrk_v_nsub21" , sample.c_str(),sel.c_str(),cone),";jet tau_{21};nconst" , tau21, constituents.size(), 100, 0, 1.0, 100, 0, 100.0 );
 			
-			// slice tau in ntrack regions
+			// slice tau in ntrack regions 
 			plotter.Plot1D(Form( "%s_%s_jetsAK%i_suep_nsub21_evtntrk%s" , sample.c_str(),sel.c_str(),cone,evtntracksel.c_str()), ";jet tau_{21}", tau21, 100, 0, 1.0 );	
 			plotter.Plot1D(Form( "%s_%s_jetsAK%i_suep_nsub21_jetntrk%s" , sample.c_str(),sel.c_str(),cone,jetntracksel.c_str()), ";jet tau_{21}", tau21, 100, 0, 1.0 );	
 
-    
+            // compare tau and rho0/1
+			plotter.Plot2D(Form( "%s_%s_jetsAK%i_suep_tau21_v_rho0_dR0p05"   , sample.c_str(),sel.c_str(),cone),Form(";jet rho0;jet tau_{21}" ) , rhos[0], tau21   , 100, 0, 20.0, 100, 0, 1.0 );		
+			plotter.Plot2D(Form( "%s_%s_jetsAK%i_suep_tau21_v_rho1_dR0p05"   , sample.c_str(),sel.c_str(),cone),Form(";jet rho1;jet tau_{21}" ) , rhos[1], tau21   , 100, 0, 20.0, 100, 0, 1.0 );		
+			plotter.Plot2D(Form( "%s_%s_jetsAK%i_suep_tau32_v_rho0_dR0p05"   , sample.c_str(),sel.c_str(),cone),Form(";jet rho0;jet tau_{32}" ) , rhos[0], tau32   , 100, 0, 20.0, 100, 0, 1.0 );		
+			plotter.Plot2D(Form( "%s_%s_jetsAK%i_suep_tau32_v_rho1_dR0p05"   , sample.c_str(),sel.c_str(),cone),Form(";jet rho1;jet tau_{32}" ) , rhos[1], tau32   , 100, 0, 20.0, 100, 0, 1.0 );		
+
+            // slice tau in ntrack/rho0 regions
+            plotter.Plot1D(Form( "%s_%s_jetsAK%i_suep_nsub21_evtntrk%s_rho0%s" , sample.c_str(),sel.c_str(),cone,evtntracksel.c_str(), rho0sel.c_str() ), ";jet tau_{21}", tau21, 100, 0, 1.0 );	
+			plotter.Plot1D(Form( "%s_%s_jetsAK%i_suep_nsub21_rho0%s" 		   , sample.c_str(),sel.c_str(),cone,rho0sel.c_str()					   ), ";jet tau_{21}", tau21, 100, 0, 1.0 );	
+
+            // compare tau21 and ntracks for different rho0 regions
+			plotter.Plot2D(Form( "%s_%s_jetsAK%i_suep_evtntrk_v_nsub21L_rho0%s", sample.c_str(),sel.c_str(),cone,rho0sel.c_str()),";jet tau_{21};ntrk"   , tau21, tracks.size()      , 100, 0, 1.0, 250, 0, 250.0 );		
+			plotter.Plot2D(Form( "%s_%s_jetsAK%i_suep_evtntrk_v_nsub21_rho0%s" , sample.c_str(),sel.c_str(),cone,rho0sel.c_str()),";jet tau_{21};ntrk"   , tau21, tracks.size()      , 100, 0, 1.0, 100, 0, 100.0 );		
+			plotter.Plot2D(Form( "%s_%s_jetsAK%i_suep_jetntrk_v_nsub21_rho0%s" , sample.c_str(),sel.c_str(),cone,rho0sel.c_str()),";jet tau_{21};nconst" , tau21, constituents.size(), 100, 0, 1.0, 100, 0, 100.0 );
+
 			//if (cone == 15){
 			//
 			// COMPARISON WITH TRUTH SUEP "jet"

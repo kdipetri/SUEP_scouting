@@ -135,17 +135,6 @@ def compareDataMC(dist):
 
     compare1D(hists,labels,"rhoStudy/compare1D_{}".format(dist))
 
-#
-# Make nsubjettiness signal and background shape comparison plots
-#
-taus=[]
-taus.append("nsub1")
-taus.append("nsub2")
-taus.append("nsub3")
-taus.append("nsub21")
-taus.append("nsub32")
-for tau in taus:
-    compareDataMC("scouting_jetsAK15_suep_"+tau)
 
 # 
 # Make rho signal & background shape comparison plots
@@ -154,12 +143,12 @@ r0bins = ["rho0low", "rho0high"]
 dists=[]
 for i in range(15):
     dists.append("scouting_jetsAK15_suep_rho_dR0p05_%i"%i)
-    
-
-for dist in dists: 
-    compareDataMC(dist)
-    for r0bin in r0bins: 
-        compareDataMC(dist+"_"+r0bin)
+#     
+# 
+# for dist in dists: 
+#     compareDataMC(dist)
+#     for r0bin in r0bins: 
+#         compareDataMC(dist+"_"+r0bin)
 
 #
 # Make rho profiles for data
@@ -200,6 +189,7 @@ def rhoProfiles(dists,sample="data18",dR=0.05):
 
 samples = []
 samples.append("data18")
+samples.append("QCD")
 samples.append("mMed-200_mDark-2_temp-2_decay-darkPho")
 samples.append("mMed-300_mDark-2_temp-2_decay-darkPho")
 samples.append("mMed-400_mDark-2_temp-2_decay-darkPho")
@@ -307,11 +297,21 @@ compareRhoVNtrack("jetsAK15_suep_rho_dR0p05_2","rho0low_evtntrk")
 
 r0bins = ["rho0low", "rho0high"]
 for rbin in range(3):
+
+    profile2D("data18","scouting_jetsAK15_suep_evtntrk_v_rho_dR0p05_%i"%rbin)
     profile2D("data18","scouting_jetsAK15_suep_evtntrk_v_rho_dR0p05_%i"%rbin)
     profile2D("data18","scouting_jetsAK15_suep_jetntrk_v_rho_dR0p05_%i"%rbin)
     #profile2D("data18","scouting_jetsAK15_suep_jetpt_v_rho_dR0p05_%i"%rbin)
 
     for r0bin in r0bins: 
+        profile2D("mMed-300_mDark-2_temp-2_decay-darkPho","scouting_jetsAK15_suep_evtntrk_v_rho_dR0p05_%i_%sL"%(rbin,r0bin))
+
+
+        profile2D("QCD","scouting_jetsAK15_suep_evtntrk_v_rho_dR0p05_%i_%sL"%(rbin,r0bin))
+        profile2D("QCD","scouting_jetsAK15_suep_evtntrk_v_rho_dR0p05_%i_%s"%(rbin,r0bin))
+        profile2D("QCD","scouting_jetsAK15_suep_jetntrk_v_rho_dR0p05_%i_%s"%(rbin,r0bin))
+
+        profile2D("data18","scouting_jetsAK15_suep_evtntrk_v_rho_dR0p05_%i_%sL"%(rbin,r0bin))
         profile2D("data18","scouting_jetsAK15_suep_evtntrk_v_rho_dR0p05_%i_%s"%(rbin,r0bin))
         profile2D("data18","scouting_jetsAK15_suep_jetntrk_v_rho_dR0p05_%i_%s"%(rbin,r0bin))
         #profile2D("data18","scouting_jetsAK15_suep_jetpt_v_rho_dR0p05_%i_%s"%(rbin,r0bin))

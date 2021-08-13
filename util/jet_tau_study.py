@@ -113,7 +113,7 @@ def compare1D(hists,labels,filename,opt=""):
 
 def compareDataMC(dist):
     samples = []
-    #samples.append("QCD")
+    samples.append("QCD")
     samples.append("data18")
     samples.append("mMed-200_mDark-2_temp-2_decay-darkPho")
     samples.append("mMed-300_mDark-2_temp-2_decay-darkPho")
@@ -143,6 +143,8 @@ taus.append("nsub1")
 taus.append("nsub2")
 taus.append("nsub3")
 taus.append("nsub21")
+taus.append("nsub21_rho0low")
+taus.append("nsub21_rho0high")
 taus.append("nsub32")
 for tau in taus:
     compareDataMC("scouting_jetsAK15_suep_"+tau)
@@ -151,16 +153,32 @@ for tau in taus:
 # Make 2D profiles of tau21 v ntracks
 # 
 
+profile2D("data18","scouting_jetsAK15_suep_evtntrk_v_nsub21_rho0low")
+profile2D("data18","scouting_jetsAK15_suep_evtntrk_v_nsub21_rho0high")
 profile2D("data18","scouting_jetsAK15_suep_evtntrk_v_nsub21")
 profile2D("data18","scouting_jetsAK15_suep_jetntrk_v_nsub21")
+profile2D("data18","scouting_jetsAK15_suep_tau21_v_rho0_dR0p05")
     
+profile2D("QCD","scouting_jetsAK15_suep_evtntrk_v_nsub21_rho0high")
+profile2D("QCD","scouting_jetsAK15_suep_evtntrk_v_nsub21_rho0low")
+profile2D("QCD","scouting_jetsAK15_suep_evtntrk_v_nsub21L")
+profile2D("QCD","scouting_jetsAK15_suep_evtntrk_v_nsub21")
+profile2D("QCD","scouting_jetsAK15_suep_jetntrk_v_nsub21")
+profile2D("QCD","scouting_jetsAK15_suep_tau21_v_rho0_dR0p05")
+profile2D("QCD","scouting_jetsAK15_suep_tau21_v_rho1_dR0p05")
+
 profile2D("mMed-200_mDark-2_temp-2_decay-darkPho","scouting_jetsAK15_suep_jetntrk_v_nsub21")
 profile2D("mMed-200_mDark-2_temp-2_decay-darkPho","scouting_jetsAK15_suep_evtntrk_v_nsub21")
+profile2D("mMed-200_mDark-2_temp-2_decay-darkPho","scouting_jetsAK15_suep_tau21_v_rho0_dR0p05")
 
+profile2D("mMed-400_mDark-2_temp-2_decay-darkPho","scouting_jetsAK15_suep_jetntrk_v_nsub21")
+profile2D("mMed-400_mDark-2_temp-2_decay-darkPho","scouting_jetsAK15_suep_evtntrk_v_nsub21")
+profile2D("mMed-400_mDark-2_temp-2_decay-darkPho","scouting_jetsAK15_suep_evtntrk_v_nsub21L")
+profile2D("mMed-400_mDark-2_temp-2_decay-darkPho","scouting_jetsAK15_suep_tau21_v_rho0_dR0p05")
 #
 ## now compare tau in ntrack slices for data
 
-def compareTauVNtrack(dist="jetsAK15_suep_nsub21",kind="evtntrk", sample="data18",sel="scouting"):
+def compareTauVNtrack(dist="jetsAK15_suep_nsub21",kind="evtntrk", sample="data18",sel="scouting",rhoopt=""):
 
     ntrks = []
 
@@ -181,7 +199,7 @@ def compareTauVNtrack(dist="jetsAK15_suep_nsub21",kind="evtntrk", sample="data18
     hists=[]
     labels=[]
     for ntrk in ntrks:
-        name = sel+"_"+dist+"_"+ntrk
+        name = sel+"_"+dist+"_"+ntrk+rhoopt
         print(name)
         hist = get1D(sample,name)
         print(hist)
@@ -191,10 +209,13 @@ def compareTauVNtrack(dist="jetsAK15_suep_nsub21",kind="evtntrk", sample="data18
             hists.append(hist)
             labels.append(ntrk)
 
-    compare1D(hists,labels,"tauStudy/compare_correlation_{}_{}".format(dist,kind),opt="err")
+    compare1D(hists,labels,"tauStudy/compare_correlation_{}_{}_{}".format(dist+rhoopt,kind,sample),opt="err")
 
 
-dists = compareTauVNtrack()
+compareTauVNtrack(sample="data18")
+compareTauVNtrack(sample="QCD")
+compareTauVNtrack(dist="jetsAK15_suep_nsub21",rhoopt="_rho0low",sample="data18")
+compareTauVNtrack(dist="jetsAK15_suep_nsub21",rhoopt="_rho0low",sample="QCD")
 
 
 

@@ -139,12 +139,24 @@ def get1D(sample,dist):
         f = ROOT.TFile.Open(filename)
         histname = "{}_{}".format(sample,dist)
         hist = f.Get(histname)
+        hist.Scale(sig_xs(sample))
     
     # if hist exists
     if hist : 
         hist.SetDirectory(0)
         return hist
     else : return 0
+
+def sig_xs(sample):
+
+    if "125"  in sample : return 34.8 / 100000 * 135000
+    if "200"  in sample : return 13.6 / 500000 * 135000    
+    if "300"  in sample : return 8.9  / 500000 * 135000
+    if "400"  in sample : return 5.9  / 100000 * 135000
+    if "750"  in sample : return 0.5  / 100000 * 135000
+    if "1000" in sample : return 0.17 / 100000 * 135000
+    return 1.
+
 
 def qcd_xs(sample):
 
@@ -174,7 +186,7 @@ def getQCD(dist):
         if not f: continue
         h = f.Get("{}_{}".format(sample,dist))
         if not h:
-            print("Missing hist: {}_{}".format(sample,dist)) 
+            #print("Missing hist: {}_{}".format(sample,dist)) 
             continue
         #scale to xs * lumi * totalweights
         h.Scale(qcd_xs(sample))

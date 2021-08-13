@@ -11,10 +11,11 @@ lumi=0.1 #fb?
 
 def ABCDtest(ntrklow, ntrkcut, ntrkhigh, taulow, taucut, tauhigh , dist="jetsAK15_suep_rho_dR0p05_1", kind="evtntrk"):
 
-    
-    sample="data18"
+    #
+    # background
+    #
+    sample="QCD"
     hist  = get1D(sample,dist)
-    #print(dist)
 
     xlow  = hist.GetXaxis().FindBin(taulow)
     xcut  = hist.GetXaxis().FindBin(taucut)
@@ -24,25 +25,37 @@ def ABCDtest(ntrklow, ntrkcut, ntrkhigh, taulow, taucut, tauhigh , dist="jetsAK1
     yhigh = hist.GetYaxis().FindBin(ntrkhigh)
     #print (xlow,xcut,xhigh,ylow,ycut,yhigh)
 
-    a = hist.Integral( xlow, xcut , ylow, ycut ) # lwo ntrk low rho
-    b = hist.Integral( xcut, xhigh, ylow, ycut ) # lwo ntrk high rho
-
-    c = hist.Integral( xlow, xcut , ycut, -1 ) # high ntrk, low rho
-    d = hist.Integral( xcut, xhigh, ycut, -1 ) # high ntrk, high rho
+    a = round(hist.Integral( xlow, xcut , ylow, ycut ),1) # lwo ntrk low tau 
+    b = round(hist.Integral( xcut, xhigh, ylow, ycut ),1) # lwo ntrk high tau 
+    c = round(hist.Integral( xlow, xcut , ycut, -1   ),1) # high ntrk, low tau 
+    d = round(hist.Integral( xcut, xhigh, ycut, -1   ),1) # high ntrk, high tau 
 
     dpred = round(b/a*c,2)
-    print(a,b,c,dpred,d)
+
+    # 
+    # signal
+    sample="mMed-300_mDark-2_temp-2_decay-darkPho"
+    histSig  = get1D(sample,dist)
+    dSig = round(histSig.Integral( xcut, xhigh, ycut, -1   ),1) # high ntrk, high tau 
+
+    signif = round(dSig / (dpred + dSig + (0.5*dpred)**2 )**0.5 ,1) 
+    # 
+    # Output
+    #
+
+    print(a,b,c,dpred,d,dSig, signif)
+
     return
 
 #
 # Event ntracks
 #
-ntrkcuts = [70,75,80,85,90]
-taucuts = [0.55,0.60,0.65,0.7]
+ntrkcuts = [90,100,110,120,130]
+taucuts = [0.65,0.7,0.75]
 for taucut in taucuts:
-    print(taucut, "vary ntrk")
+    #print(taucut, "vary ntrk")
     for ntrkcut in ntrkcuts: 
-        ABCDtest(10, ntrkcut,500, 0.0,taucut,1.0,"scouting_jetsAK15_suep_evtntrk_v_nsub21")
+        ABCDtest(10, ntrkcut,500, 0.0,taucut,1.0,"scouting_jetsAK15_suep_evtntrk_v_nsub21L")
 
 
 #
