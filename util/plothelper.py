@@ -8,6 +8,8 @@ doPng=True
 doPdf=False
 doC=False
 
+lumi=135000 #ipb
+
 one   = ROOT.TColor(2001,143/255.,45 /255.,86/255.,"darkPurple")#quinacridone magenta
 two   = ROOT.TColor(2002,119/255.,104/255.,174/255.,"blahBlue")#blue-violet
 three = ROOT.TColor(2003,239/255.,71 /255.,111/255.,"pinkRed")#paradise pink
@@ -149,24 +151,24 @@ def get1D(sample,dist):
 
 def sig_xs(sample):
 
-    if "125"  in sample : return 34.8 / 100000 * 135000
-    if "200"  in sample : return 13.6 / 500000 * 135000    
-    if "300"  in sample : return 8.9  / 500000 * 135000
-    if "400"  in sample : return 5.9  / 100000 * 135000
-    if "750"  in sample : return 0.5  / 100000 * 135000
-    if "1000" in sample : return 0.17 / 100000 * 135000
+    if "125"  in sample : return 34.8 / 100000 * lumi
+    if "200"  in sample : return 13.6 / 500000 * lumi    
+    if "300"  in sample : return 8.9  / 500000 * lumi
+    if "400"  in sample : return 5.9  / 100000 * lumi
+    if "750"  in sample : return 0.5  / 100000 * lumi
+    if "1000" in sample : return 0.17 / 100000 * lumi
     return 1.
 
 
 def qcd_xs(sample):
 
-    if "QCD_HT200to300"   in sample : return 1559000 / 100000 * 135000
-    if "QCD_HT300to500"   in sample : return 347700 / 100000 * 135000 #311900 - was missing k-factor
-    if "QCD_HT500to700"   in sample : return 32100 / 100000 * 135000  #29070 - was missing k-factor
-    if "QCD_HT700to1000"  in sample : return 6831 / 100000 * 135000  #5962 - was missing k-factor
-    if "QCD_HT1000to1500" in sample : return 1207 / 100000 * 135000  
-    if "QCD_HT1500to2000" in sample : return 119.9 / 7242 * 135000  # * 100000./7242. # missing some events
-    if "QCD_HT2000toInf"  in sample : return 25.24 / 45606 * 135000  # * 100000./45606. # missing some events
+    if "QCD_HT200to300"   in sample : return 1559000 / 100000 * lumi
+    if "QCD_HT300to500"   in sample : return 347700 / 100000 * lumi #311900 - was missing k-factor
+    if "QCD_HT500to700"   in sample : return 32100 / 100000 * lumi  #29070 - was missing k-factor
+    if "QCD_HT700to1000"  in sample : return 6831 / 100000 * lumi  #5962 - was missing k-factor
+    if "QCD_HT1000to1500" in sample : return 1207 / 100000 * lumi  
+    if "QCD_HT1500to2000" in sample : return 119.9 / 7242 * lumi  # * 100000./7242. # missing some events
+    if "QCD_HT2000toInf"  in sample : return 25.24 / 45606 * lumi  # * 100000./45606. # missing some events
 
 def getQCD(dist):
 

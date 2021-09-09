@@ -97,8 +97,41 @@ vector<float> jet_rhos(PseudoJet jet, float dR, int nSteps)
     
     return rhos;
 }
+// mean interparticle distance
+float meanDR(PseudoJet jet){
+	float mean_dR = 0;
+	float n_pairs = 0;
+	for (auto track1 : jet.constituents()){
+		for (auto track2 : jet.constituents()){
+			if (track1 == track2) continue;
+			float dist = delta_r(track1,track2);
+			mean_dR += dist;
+			n_pairs += 1;
+
+		}
+	}
+	mean_dR = mean_dR/n_pairs;
+	return mean_dR;
+}
 //
-//
+// mean interparticle distance
+float meanMinDR(PseudoJet jet){
+	float mean_min_dR = 0;
+	float n_pairs = 0;
+	for (auto track1 : jet.constituents()){
+		float min_dR = 10;
+		for (auto track2 : jet.constituents()){
+			if (track1 == track2) continue;
+
+			float dR = delta_r(track1,track2);
+			if (dR < min_dR) min_dR = dR; 
+		}
+		mean_min_dR += min_dR;
+		n_pairs += 1;
+	}
+	mean_min_dR = mean_min_dR/n_pairs;
+	return mean_min_dR;
+}
 //
 float nsubjettiness(PseudoJet jet, int n, float R) 
 {// https://githubmemory.com/repo/pkomiske/Nsubjettiness
@@ -198,8 +231,7 @@ void makeAKDisplay(PseudoJet suep_jet, const vector<fastjet::PseudoJet> jets, st
 	c1->Print(Form("plots/rhoStudy/eventDisplay/%s_%lli.png", sample.c_str(), ievent));
 }
 
-//void fatjet_plots(std::string sample, std::string sel, std::vector<Track> tracks, SUEP_Jet truth_suep_jet, Long64_t ievent, float R=0.8){
-void fatjet_plots(std::string sample, std::string sel, std::vector<Track> tracks, Long64_t ievent, float R=0.8){
+vector<FatJet> fatjet_plots(std::string sample, std::string sel, std::vector<Track> tracks, Long64_t ievent, float R=0.8){
 
 	// Get the particles ready
 	std::vector<PseudoJet> particles;
@@ -218,6 +250,7 @@ void fatjet_plots(std::string sample, std::string sel, std::vector<Track> tracks
 	ClusterSequence cs(particles, jet_def);
 	//ClusterSequenceArea cs(particles, jet_def, area_def);
 	std::vector<PseudoJet> jets = sorted_by_pt(cs.inclusive_jets());
+	std::vector<FatJet> fat_jets = {}; // for using outside of this function
 
 	// *
 	// Make some nice plots...
@@ -228,7 +261,7 @@ void fatjet_plots(std::string sample, std::string sel, std::vector<Track> tracks
 	int max_nconsit=0;
 
 	///if (ievent < 200) makeAKDisplay(jets, sample, cone, ievent);
-
+	FatJet fat_jet;
 	for (unsigned i = 0; i < jets.size(); i++) {
 
 		// basic cleaning cuts 
@@ -237,7 +270,10 @@ void fatjet_plots(std::string sample, std::string sel, std::vector<Track> tracks
 
 		n_fatjets+=1;
 
-		//std::cout << jets[i].area() << std::endl;
+		//For saving & plotting outside this function
+		fat_jet.p4.SetPtEtaPhiM( jets[i].pt(), jets[i].eta(), jets[i].phi_std(), jets[i].m());
+		fat_jet.nconstituents = jets[i].constituents().size();
+		fat_jets.push_back(fat_jet);
 
 		// the basics...
 		plotter.Plot1D(Form( "%s_%s_jetsAK%i_pt" , sample.c_str(),sel.c_str(),cone),";jet pt" , jets[i].pt()      , 100, 0, 1000 );
@@ -389,6 +425,11 @@ void fatjet_plots(std::string sample, std::string sel, std::vector<Track> tracks
 			plotter.Plot2D(Form( "%s_%s_jetsAK%i_suep_evtntrk_v_nsub21_rho0%s" , sample.c_str(),sel.c_str(),cone,rho0sel.c_str()),";jet tau_{21};ntrk"   , tau21, tracks.size()      , 100, 0, 1.0, 100, 0, 100.0 );		
 			plotter.Plot2D(Form( "%s_%s_jetsAK%i_suep_jetntrk_v_nsub21_rho0%s" , sample.c_str(),sel.c_str(),cone,rho0sel.c_str()),";jet tau_{21};nconst" , tau21, constituents.size(), 100, 0, 1.0, 100, 0, 100.0 );
 
+			// interparticle distances
+			plotter.Plot1D(Form( "%s_%s_jetsAK%i_suep_meanDR"    , sample.c_str(),sel.c_str(),cone ), ";jet mean dR"    , meanDR(suep_jet)   , 100, 0, 4.0 );	
+			plotter.Plot1D(Form( "%s_%s_jetsAK%i_suep_meanMinDR" , sample.c_str(),sel.c_str(),cone ), ";jet mean min dR", meanMinDR(suep_jet), 100, 0, 1.0 );	
+			plotter.Plot2D(Form( "%s_%s_jetsAK%i_suep_evtntrk_meanDR"    , sample.c_str(),sel.c_str(),cone ), ";jet mean dR;ntrk"    , meanDR(suep_jet)   , tracks.size() , 100, 0, 4.0, 250, 0, 250 );	
+			plotter.Plot2D(Form( "%s_%s_jetsAK%i_suep_evtntrk_meanMinDR" , sample.c_str(),sel.c_str(),cone ), ";jet mean min dR;ntrk", meanMinDR(suep_jet), tracks.size() , 100, 0, 1.0, 250, 0, 250 );	
 			//if (cone == 15){
 			//
 			// COMPARISON WITH TRUTH SUEP "jet"
@@ -412,5 +453,5 @@ void fatjet_plots(std::string sample, std::string sel, std::vector<Track> tracks
 	}
 
 
-	return;
+	return fat_jets;
 }

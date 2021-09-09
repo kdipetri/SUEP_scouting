@@ -28,12 +28,10 @@ struct Jet {
   float CHM;  
 };
 
-struct JetAK8 {
+struct FatJet {
   unsigned int index;
   TLorentzVector p4;
-  bool id;
-  int multiplicity;
-  int chargedMultiplicity;
+  int nconstituents;
 };
 
 struct Track {

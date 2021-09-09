@@ -16,6 +16,7 @@
 #include <TMatrixDSym.h>
 #include <TMatrixD.h>
 #include <TVectorD.h>
+#include <TLatex.h>
 #include "SUEP_scouting/PhysicsObjects.h"
 #include "SUEP_scouting/PlotHelper.h"
 #include "fastjet/PseudoJet.hh"

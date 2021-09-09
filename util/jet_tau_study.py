@@ -171,10 +171,10 @@ profile2D("mMed-200_mDark-2_temp-2_decay-darkPho","scouting_jetsAK15_suep_jetntr
 profile2D("mMed-200_mDark-2_temp-2_decay-darkPho","scouting_jetsAK15_suep_evtntrk_v_nsub21")
 profile2D("mMed-200_mDark-2_temp-2_decay-darkPho","scouting_jetsAK15_suep_tau21_v_rho0_dR0p05")
 
-profile2D("mMed-400_mDark-2_temp-2_decay-darkPho","scouting_jetsAK15_suep_jetntrk_v_nsub21")
-profile2D("mMed-400_mDark-2_temp-2_decay-darkPho","scouting_jetsAK15_suep_evtntrk_v_nsub21")
-profile2D("mMed-400_mDark-2_temp-2_decay-darkPho","scouting_jetsAK15_suep_evtntrk_v_nsub21L")
-profile2D("mMed-400_mDark-2_temp-2_decay-darkPho","scouting_jetsAK15_suep_tau21_v_rho0_dR0p05")
+profile2D("mMed-300_mDark-2_temp-2_decay-darkPho","scouting_jetsAK15_suep_jetntrk_v_nsub21")
+profile2D("mMed-300_mDark-2_temp-2_decay-darkPho","scouting_jetsAK15_suep_evtntrk_v_nsub21")
+profile2D("mMed-300_mDark-2_temp-2_decay-darkPho","scouting_jetsAK15_suep_evtntrk_v_nsub21L")
+profile2D("mMed-300_mDark-2_temp-2_decay-darkPho","scouting_jetsAK15_suep_tau21_v_rho0_dR0p05")
 #
 ## now compare tau in ntrack slices for data
 

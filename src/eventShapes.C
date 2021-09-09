@@ -1,5 +1,45 @@
 #define eventShapes_cxx
 
+// 
+void makeEventDisplay(std::vector<Track> tracks, std::string sample, std::string sel, Long64_t ievent, double sphericity){
+
+  std::vector<TGraph*> graphs;
+  
+  int i=0;
+  for (Track track: tracks){
+    
+    // draw all constituents 
+    TGraph *graph = new TGraph();
+    graph->SetTitle(Form("g_%s_%s_%lli_%i",sample.c_str(), sel.c_str(),ievent, i));
+    graph->SetPoint(0,track.p4.Eta(),track.p4.Phi());
+      
+    graph->SetMarkerSize( std::log( track.p4.Pt() + 1) ); // test
+    graph->SetMarkerColor(kBlue+1);
+    graph->SetMarkerStyle(21);
+    graphs.push_back(graph);
+
+    i++;
+  }
+
+  TMultiGraph *mg = new TMultiGraph();
+  mg->SetTitle(";#eta; #phi");
+  for (auto gr: graphs){
+    mg->Add(gr);    
+  }   
+
+  c1->cd();
+  mg->Draw("ap");
+  mg->GetYaxis()->SetLimits(-3.5,3.5);          
+  mg->GetXaxis()->SetLimits(-3.5,3.5);// along  
+  c1->Update();
+
+  TLatex l;
+  l.SetTextSize(0.03);
+  l.DrawLatex(0.1,0.85,Form("sphericity %.2f",sphericity) );
+
+  c1->Print(Form("plots/boostingABCD/eventDisplay/%s_%s_%lli.png", sample.c_str(), sel.c_str(), ievent));
+}
+
 /// the return value is 1 for spherical events and 0 for events linear in r-phi. This function
 /// needs the number of steps to determine how fine the granularity of the algorithm in phi
 /// should be
@@ -22,7 +62,7 @@ double isotropy(std::vector<Track> tracks, const unsigned int& numberOfSteps=100
     if (eIn < 0. || sum > eIn)
       eIn = sum;
   }
-  return (eIn - eOut) / eIn;
+  return 1.0 - (eIn - eOut) / eIn;
 }
 
 /// the return value is 1 for spherical and 0 linear events in r-phi. This function needs the
@@ -162,7 +202,7 @@ void getFWmoment(){
   	std::vector<double> fwmom_ = std::vector<double>(fwmom_maxl_, 0.);
 }
 
-void plotEventShapes(std::string sample_name, std::string sel, std::vector<Track> tracks)
+void plotEventShapes(std::string sample_name, std::string sel, std::vector<Track> tracks, Long64_t ievent)
 {
   if ( tracks.size() == 0 ) return;
 
@@ -183,9 +223,21 @@ void plotEventShapes(std::string sample_name, std::string sel, std::vector<Track
 	plotter.Plot1D(Form("%s_%s_evtshape_d" 			     ,sample_name.c_str(), sel.c_str()),";d"			    , evt_d , 100,0,1, evt_wght);
 
   // useful for bkg estimation
-  plotter.Plot2D(Form("%s_%s_evtshape_ntracks_v_circularity",sample_name.c_str(), sel.c_str()),";circularity;ntracks" , cir,ntracks , 50,0,1, 50,0,200     , evt_wght);
   plotter.Plot2D(Form("%s_%s_evtshape_ht_v_circularity"     ,sample_name.c_str(), sel.c_str()),";circularity;ht [GeV]", cir,ht      , 50,0,1, 50,0,3000    , evt_wght);
   plotter.Plot2D(Form("%s_%s_evtshape_njets_v_circularity"  ,sample_name.c_str(), sel.c_str()),";circularity;njets"   , cir,njets   , 50,0,1, 20,-0.5, 19.5, evt_wght);
+  
+  plotter.Plot2D(Form("%s_%s_evtshape_ht_v_sphericity"     ,sample_name.c_str(), sel.c_str()),";sphericity;ht [GeV]", sphere,ht      , 50,0,1, 50,0,3000    , evt_wght);
+  plotter.Plot2D(Form("%s_%s_evtshape_njets_v_sphericity"  ,sample_name.c_str(), sel.c_str()),";sphericity;njets"   , sphere,njets   , 50,0,1, 20,-0.5, 19.5, evt_wght);
+
+  // useful for bkg estimation
+  plotter.Plot2D(Form("%s_%s_evtshape_ntracks_v_isotropy"   ,sample_name.c_str(), sel.c_str()),";isotropy;ntracks"    , iso   ,ntracks , 50,0,1, 50,0,200     , evt_wght);
+  plotter.Plot2D(Form("%s_%s_evtshape_ntracks_v_circularity",sample_name.c_str(), sel.c_str()),";circularity;ntracks" , cir   ,ntracks , 50,0,1, 50,0,200     , evt_wght);
+  plotter.Plot2D(Form("%s_%s_evtshape_ntracks_v_sphericity" ,sample_name.c_str(), sel.c_str()),";sphericity;ntracks"  , sphere,ntracks , 50,0,1, 50,0,200     , evt_wght);
+  plotter.Plot2D(Form("%s_%s_evtshape_ntracks_v_aplanarity" ,sample_name.c_str(), sel.c_str()),";aplanarity;ntracks" , aplan ,ntracks , 50,0,1, 50,0,200     , evt_wght);
+  plotter.Plot2D(Form("%s_%s_evtshape_ntracks_v_c"          ,sample_name.c_str(), sel.c_str()),";c;ntracks"          , evt_c ,ntracks , 50,0,1, 50,0,200     , evt_wght);
+  plotter.Plot2D(Form("%s_%s_evtshape_ntracks_v_d"          ,sample_name.c_str(), sel.c_str()),";d;ntracks"          , evt_d ,ntracks , 50,0,1, 50,0,200     , evt_wght);
+
+  if (ievent < 100) makeEventDisplay(tracks, sample_name,  sel, ievent, sphere);
 }
 
 

@@ -125,7 +125,7 @@ void doHistos::Loop(std::string s_sample,bool isMC)
 
       jet.id = ( jet.CEMF<0.8 && jet.CHM>0 && jet.CHF>0 && jet.NumConst>1 && jet.NEMF<0.9 && jet.MUF <0.8 && jet.NHF < 0.9 );
 
-      //std::cout << i << "pass ID " << jet.id << std::endl;
+      //std::cout << i << " pass ID " << jet.id << std::endl;
 
       if (jet.id) {
         jets.push_back(jet);
@@ -209,12 +209,44 @@ void doHistos::Loop(std::string s_sample,bool isMC)
     if (ht < 500) continue; // may need to up this to be fully in the turn on?
 
     basic_kinematics(s_sample,"scouting");
-    //plotEventShapes(s_sample,"scouting", tracks);
-    fatjet_plots(s_sample,"scouting", tracks, jentry, 1.5);
 
-    //if (ht < 1200) continue;
-    //basic_kinematics(s_sample,"offline");
-    //plotEventShapes(s_sample,"scouting",tracks);
+    plotEventShapes(s_sample,"scouting", tracks, jentry);
+
+    vector<FatJet> fat_jets = fatjet_plots(s_sample,"scouting", tracks, jentry, 1.5);
+
+    // do Christo's boosting here
+    if ( fat_jets.size() > 1 ){ // based on https://github.com/SUEPPhysics/SUEPAnalysis/blob/Christos/python/SUEPProducer.py#L213
+
+      // pick SUEP & ISR jet
+      FatJet SUEP_cand = fat_jets.at(0);
+      FatJet ISR_cand  = fat_jets.at(1);
+      if ( SUEP_cand.nconstituents < ISR_cand.nconstituents )  {
+          SUEP_cand = fat_jets.at(1);
+          ISR_cand  = fat_jets.at(0);        
+      }
+
+      // get relevant vectors
+      TVector3 boost_pt = SUEP_cand.p4.BoostVector();
+
+      // boost in to rest frame & remove tracks consistent with ISR
+      std::vector<Track> boosted_tracks = {};
+      std::vector<Track> boosted_tracks_noPhi = {};
+      for (Track track : tracks){
+
+          Track boosted_track = track;
+          boosted_track.p4.Boost(-boost_pt);
+
+          boosted_tracks_noPhi.push_back(boosted_track);         
+
+          //if ( abs( boosted_track.p4.DeltaPhi(ISR_cand.p4) )  < 1.0) continue; // need to test this
+          if ( abs( boosted_track.p4.DeltaPhi(ISR_cand.p4) )  < 1.6 ) continue;
+          boosted_tracks.push_back(boosted_track);         
+      }
+
+      plotEventShapes(s_sample,"scouting_boosted_noPhi", boosted_tracks_noPhi, jentry);
+      plotEventShapes(s_sample,"scouting_boosted", boosted_tracks, jentry);
+
+    } // end boosting
 
 
 

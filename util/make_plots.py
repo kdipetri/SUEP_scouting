@@ -220,13 +220,19 @@ dists.append("track_pt")
 dists.append("track_eta")
 dists.append("track_phi")
 
-#dists.append("evtshape_aplanarity")   
-#dists.append("evtshape_c")    
-#dists.append("evtshape_circularity")  
-#dists.append("evtshape_d")    
-#dists.append("evtshape_isotropy") 
-#dists.append("evtshape_sphericity")
+dists.append("evtshape_aplanarity")   
+dists.append("evtshape_c")    
+dists.append("evtshape_circularity")  
+dists.append("evtshape_d")    
+dists.append("evtshape_isotropy") 
+dists.append("evtshape_sphericity")
 
+dists.append("boosted_evtshape_aplanarity")   
+dists.append("boosted_evtshape_c")    
+dists.append("boosted_evtshape_circularity")  
+dists.append("boosted_evtshape_d")    
+dists.append("boosted_evtshape_isotropy") 
+dists.append("boosted_evtshape_sphericity")
 
 
 dists.append("vertex_ntracks")
@@ -241,6 +247,11 @@ dists.append("jetsAK15_suep_moverpt")
 dists.append("jetsAK15_suep_pt")
 dists.append("jetsAK15_suep_width")
 dists.append("jetsAK15_suep_nconstit")
+
+dists.append("jetsAK15_suep_meanDR")
+dists.append("jetsAK15_suep_meanMinDR")
+dists.append("jetsAK15_suep_nsub21")
+
 
 for i in range(15):
     dists.append("jetsAK15_suep_rho_dR0p05_%i"%i)
@@ -262,5 +273,5 @@ for sel in sels:
         #compareMass(2,2,"darkPho",name)
         #compareDecay(750,2,2,name)
 
-compareDataMC("offline_htL")
+#compareDataMC("offline_htL")
 
